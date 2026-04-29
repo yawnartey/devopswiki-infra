@@ -18,16 +18,16 @@ resource "aws_instance" "devopswiki-fe" {
 }
 
 # backend ec2 instance
-resource "aws_instance" "devopswiki-be" {
-  ami                    = "ami-023adbbb2c440f837"
-  instance_type          = "t2.micro"
-  subnet_id              = var.subnet_ids["be-subnet"]
-  vpc_security_group_ids = [var.be_security_group_id]
-  user_data = templatefile("${path.module}/scripts/bootstrap.sh", )
-  tags = {
-    Name = "DevOps WiKi Backend"
-  }
-}
+# resource "aws_instance" "devopswiki-be" {
+#   ami                    = "ami-023adbbb2c440f837"
+#   instance_type          = "t2.micro"
+#   subnet_id              = var.subnet_ids["be-subnet"]
+#   vpc_security_group_ids = [var.be_security_group_id]
+#   user_data = templatefile("${path.module}/scripts/bootstrap.sh", )
+#   tags = {
+#     Name = "DevOps WiKi Backend"
+#   }
+# }
 
 # frontend eip
 resource "aws_eip" "devopswiki-fe-eip" {
