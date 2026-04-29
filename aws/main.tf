@@ -4,7 +4,7 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 6.0"
     }
-    random ={
+    random = {
       source  = "hashicorp/random"
       version = "~> 3.6"
 
@@ -12,17 +12,17 @@ terraform {
   }
 
   backend "s3" {
-    bucket = "devops-wiki-tf-state-bucket--1b99490b6410aaaf"
-    key = "state/terraform.tfstate"
-    region = "eu-central-1"
-    encrypt = true
+    bucket       = "devops-wiki-tf-state-bucket--1b99490b6410aaaf"
+    key          = "state/terraform.tfstate"
+    region       = "eu-central-1"
+    encrypt      = true
     use_lockfile = true
-    profile = "lync"
+    profile      = "lync"
   }
 }
 
 provider "aws" {
-  region = "eu-central-1"
+  region  = "eu-central-1"
   profile = "lync"
 }
 
@@ -39,11 +39,16 @@ module "security_group" {
 
 # compute module
 module "compute" {
-  source = "./compute"
-  subnet_ids = module.networking.subnet_ids
+  source               = "./compute"
+  subnet_ids           = module.networking.subnet_ids
   fe_security_group_id = module.security_group.fe_security_group_id
   be_security_group_id = module.security_group.be_security_group_id
-  yaw_public_key = var.yaw_public_key
+  yaw_public_key       = var.yaw_public_key
+  github_token         = var.github_token
+  postgres_user        = var.postgres_user
+  postgres_password    = var.postgres_password
+  dockerhub_username   = var.dockerhub_username
+  dockerhub_password   = var.dockerhub_password
 }
 
 # dns module
