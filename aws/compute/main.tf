@@ -4,7 +4,9 @@ resource "aws_instance" "devopswiki-fe" {
   instance_type          = "t2.micro"
   subnet_id              = var.subnet_ids["fe-subnet"]
   vpc_security_group_ids = [var.fe_security_group_id]
+  iam_instance_profile   = var.fe_instance_profile
   user_data = templatefile("${path.module}/scripts/bootstrap-fe.sh", {
+    be_private_ip      = aws_instance.devopswiki-be.private_ip
     yaw_public_key     = var.yaw_public_key
     postgres_user      = var.postgres_user
     postgres_password  = var.postgres_password
@@ -24,7 +26,6 @@ resource "aws_instance" "devopswiki-be" {
   subnet_id              = var.subnet_ids["be-subnet"]
   vpc_security_group_ids = [var.be_security_group_id]
   user_data = templatefile("${path.module}/scripts/bootstrap-be.sh", {
-    be_private_ip      = aws_instance.devopswiki-be.private_ip
     yaw_public_key     = var.yaw_public_key
     postgres_user      = var.postgres_user
     postgres_password  = var.postgres_password
