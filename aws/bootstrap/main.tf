@@ -4,7 +4,7 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 6.0"
     }
-    random ={
+    random = {
       source  = "hashicorp/random"
       version = "~> 3.6"
 
@@ -14,7 +14,7 @@ terraform {
 }
 
 provider "aws" {
-  region = "eu-central-1"
+  region  = "eu-central-1"
   profile = "lync"
 }
 
@@ -32,8 +32,8 @@ resource "aws_s3_bucket" "devops_wiki_tf_state" {
   }
 
   tags = {
-    Name        = "DevOps WiKi Terraform State"
-    ManagedBy   = "terraform"
+    Name      = "DevOps WiKi Terraform State"
+    ManagedBy = "terraform"
   }
 }
 
@@ -60,6 +60,50 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "devops_wiki_tf_st
 # block public access to the bucket
 resource "aws_s3_bucket_public_access_block" "terraform_state" {
   bucket = aws_s3_bucket.devops_wiki_tf_state.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+# s3 bucket for let's encrypt
+resource "aws_s3_bucket" "devops_wiki_letsencrypt" {
+  bucket = "devops-wiki-letsencrypt-${random_id.devops_wiki_randomid.hex}"
+
+  lifecycle {
+    prevent_destroy = true
+  }
+
+  tags = {
+    Name      = "DevOps WiKi LetsEncrypt Certs"
+    ManagedBy = "terraform"
+  }
+}
+
+# enable bucket versioning
+resource "aws_s3_bucket_versioning" "devops_wiki_letsencrypt_versioning" {
+  bucket = aws_s3_bucket.devops_wiki_letsencrypt.id
+
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+# encrypt the state files
+resource "aws_s3_bucket_server_side_encryption_configuration" "devops_wiki_letsencrypt_encryption" {
+  bucket = aws_s3_bucket.devops_wiki_letsencrypt.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "aws:kms"
+    }
+  }
+}
+
+# block public access to the bucket
+resource "aws_s3_bucket_public_access_block" "devops_wiki_letsencrypt_public_access" {
+  bucket = aws_s3_bucket.devops_wiki_letsencrypt.id
 
   block_public_acls       = true
   block_public_policy     = true
