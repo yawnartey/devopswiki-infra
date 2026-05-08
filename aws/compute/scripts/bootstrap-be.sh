@@ -18,14 +18,9 @@ systemctl start docker
 usermod -aG docker yaw
 
 # install and start cron daemon
-yum install -y cronie
-systemctl enable crond
-systemctl start crond
-
-# install certbot & obtain certificate for domain
-yum install -y certbot
-certbot certonly --standalone -d devopswiki.info -d www.devopswiki.info \
-    --non-interactive --agree-tos --email yawenochnartey@gmail.com
+# yum install -y cronie
+# systemctl enable crond
+# systemctl start crond
 
 # write env file
 mkdir -p /opt/app
@@ -41,7 +36,7 @@ chmod +x /usr/local/bin/docker-compose
 # pull docker compose file and run it
 curl -H "Authorization: token ${github_token}" \
     -o /opt/app/docker-compose.yml \
-    https://raw.githubusercontent.com/yawnartey/devopswiki-containerisation/dev/docker-compose.yml
+    https://raw.githubusercontent.com/yawnartey/devopswiki-containerisation/main/backend/docker-compose.yml
 
 # login to docker
 echo "${dockerhub_password}" | docker login -u ${dockerhub_username} --password-stdin
