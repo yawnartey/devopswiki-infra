@@ -25,3 +25,6 @@ variable "dockerhub_username" {
 variable "dockerhub_password" {
   type = string
 }
+variable "fe_instance_profile" {
+  type = string
+}
