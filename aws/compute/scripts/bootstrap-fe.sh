@@ -27,7 +27,7 @@ aws s3 cp s3://devops-wiki-letsencrypt-1b99490b6410aaaf/letsencrypt /etc/letsenc
 if [ ! -f /etc/letsencrypt/live/devopswiki.info/fullchain.pem ]; then
   certbot certonly --standalone -d devopswiki.info -d www.devopswiki.info \
     --non-interactive --agree-tos --email yawenochnartey@gmail.com
-  aws s3 cp /etc/letsencrypt s3://your-bucket/letsencrypt --recursive
+  aws s3 cp /etc/letsencrypt s3://devops-wiki-letsencrypt-1b99490b6410aaaf/letsencrypt --recursive
 fi
 
 # write env file
