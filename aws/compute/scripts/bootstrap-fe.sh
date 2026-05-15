@@ -34,6 +34,8 @@ fi
 mkdir -p /opt/app
 cat > /opt/app/.env <<ENVFILE
 BE_PRIVATE_IP=${be_private_ip}
+SERVER_NAME=devopswiki.info www.devopswiki.info
+CERT_DOMAIN=devopswiki.info
 ENVFILE
 
 # install docker compose
