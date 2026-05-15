@@ -50,11 +50,8 @@ module "compute" {
   be_security_group_id = module.security_group.be_security_group_id
   fe_instance_profile  = module.iam.fe_instance_profile_name
   yaw_public_key       = var.yaw_public_key
-  github_token         = var.github_token
   postgres_user        = var.postgres_user
   postgres_password    = var.postgres_password
-  dockerhub_username   = var.dockerhub_username
-  dockerhub_password   = var.dockerhub_password
 }
 
 # dns module

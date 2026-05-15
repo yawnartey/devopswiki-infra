@@ -10,19 +10,10 @@ variable "be_security_group_id" {
 variable "yaw_public_key" {
   type = string
 }
-variable "github_token" {
-  type = string
-}
 variable "postgres_user" {
   type = string
 }
 variable "postgres_password" {
-  type = string
-}
-variable "dockerhub_username" {
-  type = string
-}
-variable "dockerhub_password" {
   type = string
 }
 variable "fe_instance_profile" {
