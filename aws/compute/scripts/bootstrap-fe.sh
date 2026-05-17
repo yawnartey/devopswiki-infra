@@ -39,5 +39,10 @@ SERVER_NAME=devopswiki.info www.devopswiki.info
 CERT_DOMAIN=devopswiki.info
 ENVFILE
 
+# install docker compose
+curl -SL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
+chmod +x /usr/local/bin/docker-compose
+
+
 # set up certbot auto-renewal
 echo "0 3 * * * certbot renew --quiet && /usr/local/bin/docker-compose -f /opt/app/docker-compose.yml restart frontend" | crontab -
