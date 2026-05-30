@@ -12,8 +12,8 @@ terraform {
   }
 
   backend "s3" {
-    bucket       = "devops-wiki-tf-state-bucket--1b99490b6410aaaf"
-    key          = "state/terraform.tfstate"
+    bucket       = "devops-wiki-tf-state-bucket-c9123c3a736c3547"
+    key          = "infrastructure-prod/terraform.tfstate"
     region       = "eu-central-1"
     encrypt      = true
     use_lockfile = true

@@ -10,9 +10,9 @@ resource "aws_vpc" "devopswiki-vpc" {
 # internet gateway
 resource "aws_internet_gateway" "devopswiki-igw" {
   vpc_id = aws_vpc.devopswiki-vpc.id
-  tags   = {
+  tags = {
     Name = "DevOps WiKi IGW"
-   }
+  }
 }
 
 # frontend public subnet 
@@ -20,7 +20,7 @@ resource "aws_subnet" "fe-subnet" {
   vpc_id                  = aws_vpc.devopswiki-vpc.id
   cidr_block              = "10.0.1.0/24"
   availability_zone       = "eu-central-1a"
-  map_public_ip_on_launch = true 
+  map_public_ip_on_launch = true
   tags = {
     Name = "DevOps WiKi FE Subnet"
   }
@@ -30,7 +30,7 @@ resource "aws_subnet" "fe-subnet" {
 resource "aws_subnet" "be-subnet" {
   vpc_id                  = aws_vpc.devopswiki-vpc.id
   cidr_block              = "10.0.2.0/24"
-  availability_zone       = "eu-central-1a"
+  availability_zone       = "eu-central-1b"
   map_public_ip_on_launch = false
   tags = {
     Name = "DevOps WiKi BE Subnet"
