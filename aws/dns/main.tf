@@ -1,11 +1,12 @@
-# hosted zone
-resource "aws_route53_zone" "devopswiki-hosted-zone" {
-  name    = "devopswiki.info"
+# reference the existing hosted zone
+data "aws_route53_zone" "devopswiki-hosted-zone" {
+  name         = "devopswiki.info"
+  private_zone = false
 }
 
 # dns record 
 resource "aws_route53_record" "devopswiki-dns-recods" {
-  zone_id = aws_route53_zone.devopswiki-hosted-zone.zone_id
+  zone_id = data.aws_route53_zone.devopswiki-hosted-zone.zone_id
   name    = "devopswiki.info"
   type    = "A"
   ttl     = "300"
@@ -13,7 +14,7 @@ resource "aws_route53_record" "devopswiki-dns-recods" {
 }
 
 resource "aws_route53_record" "devopswiki-www-dns-record" {
-  zone_id = aws_route53_zone.devopswiki-hosted-zone.zone_id
+  zone_id = data.aws_route53_zone.devopswiki-hosted-zone.zone_id
   name    = "www.devopswiki.info"
   type    = "A"
   ttl     = "300"

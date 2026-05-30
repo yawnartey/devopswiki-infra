@@ -23,8 +23,8 @@ resource "aws_iam_role_policy" "fe_s3_policy" {
       Effect = "Allow"
       Action = ["s3:GetObject", "s3:PutObject", "s3:ListBucket"]
       Resource = [
-        "arn:aws:s3:::devops-wiki-letsencrypt-1b99490b6410aaaf",
-        "arn:aws:s3:::devops-wiki-letsencrypt-1b99490b6410aaaf/*"
+        "arn:aws:s3:::devops-wiki-letsencrypt-c9123c3a736c3547",
+        "arn:aws:s3:::devops-wiki-letsencrypt-c9123c3a736c3547/*"
       ]
     }]
   })
