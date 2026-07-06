@@ -1,5 +1,5 @@
-output "fe_eip" {
-  value = module.compute.fe_eip
+output "fe_pip" {
+  value = module.compute.fe_pip
 }
 output "be_pip" {
   value = module.compute.be_pip

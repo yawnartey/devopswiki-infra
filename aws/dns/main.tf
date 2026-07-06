@@ -10,7 +10,7 @@ resource "aws_route53_record" "devopswiki-dns-recods" {
   name    = "devopswiki.info"
   type    = "A"
   ttl     = "300"
-  records = [var.fe_eip]
+  records = [var.fe_pip]
 }
 
 resource "aws_route53_record" "devopswiki-www-dns-record" {
@@ -18,5 +18,5 @@ resource "aws_route53_record" "devopswiki-www-dns-record" {
   name    = "www.devopswiki.info"
   type    = "A"
   ttl     = "300"
-  records = [var.fe_eip]
+  records = [var.fe_pip]
 }

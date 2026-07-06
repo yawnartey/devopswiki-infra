@@ -57,5 +57,5 @@ module "compute" {
 # dns module
 module "dns" {
   source = "./dns"
-  fe_eip = module.compute.fe_eip
+  fe_pip = module.compute.fe_pip
 }
