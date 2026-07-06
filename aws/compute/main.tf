@@ -33,9 +33,9 @@ resource "aws_instance" "devopswiki-be" {
   }
 }
 
-# frontend eip
-resource "aws_eip" "devopswiki-fe-eip" {
-  domain   = "vpc"
-  instance = aws_instance.devopswiki-fe.id
-  tags     = { Name = "DevOps WiKi FE EIP" }
-}
+# frontend eip, being replaced by public ip to save cost
+# resource "aws_eip" "devopswiki-fe-eip" {
+#   domain   = "vpc"
+#   instance = aws_instance.devopswiki-fe.id
+#   tags     = { Name = "DevOps WiKi FE EIP" }
+# }

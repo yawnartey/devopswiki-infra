@@ -26,33 +26,33 @@ resource "aws_subnet" "fe-subnet" {
   }
 }
 
-# backend private subnet
+# backend private subnet, now public subnet
 resource "aws_subnet" "be-subnet" {
   vpc_id                  = aws_vpc.devopswiki-vpc.id
   cidr_block              = "10.0.2.0/24"
   availability_zone       = "eu-central-1b"
-  map_public_ip_on_launch = false
+  map_public_ip_on_launch = true
   tags = {
     Name = "DevOps WiKi BE Subnet"
   }
 }
 
-# elastic ip for nat gateway 
-resource "aws_eip" "devopswiki-nat-eip" {
-  domain = "vpc"
-  tags = {
-    Name = "DevOps WiKi NAT EIP"
-  }
-}
+# elastic ip for nat gateway. removed now, relying on public subnet to save cost
+# resource "aws_eip" "devopswiki-nat-eip" {
+#   domain = "vpc"
+#   tags = {
+#     Name = "DevOps WiKi NAT EIP"
+#   }
+# }
 
-# nat gateway - in fe-subnet for be-subnet outbound internet
-resource "aws_nat_gateway" "devopswiki-nat" {
-  allocation_id = aws_eip.devopswiki-nat-eip.id
-  subnet_id     = aws_subnet.fe-subnet.id
-  tags = {
-    Name = "DevOps WiKi NAT"
-  }
-}
+# nat gateway - in fe-subnet for be-subnet outbound internet. removed now, relying on public subnet to save cost
+# resource "aws_nat_gateway" "devopswiki-nat" {
+#   allocation_id = aws_eip.devopswiki-nat-eip.id
+#   subnet_id     = aws_subnet.fe-subnet.id
+#   tags = {
+#     Name = "DevOps WiKi NAT"
+#   }
+# }
 
 # public route table for fe-subnet
 resource "aws_route_table" "fe-route-table" {
@@ -66,12 +66,12 @@ resource "aws_route_table" "fe-route-table" {
   }
 }
 
-# private route table for be-subnet
+# private route table for be-subnet. now public route table
 resource "aws_route_table" "be-route-table" {
   vpc_id = aws_vpc.devopswiki-vpc.id
   route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.devopswiki-nat.id
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.devopswiki-igw.id
   }
   tags = {
     Name = "DevOps WiKi BE RT"
