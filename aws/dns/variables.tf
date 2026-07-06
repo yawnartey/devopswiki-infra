@@ -1,4 +1,4 @@
-variable "fe_eip" {
-  description = "FE instance Elastic IP"
+variable "fe_pip" {
+  description = "FE instance Public IP"
   type        = string
 }
