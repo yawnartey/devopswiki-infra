@@ -1,50 +1,61 @@
 #!/bin/bash
 set -x
+yum install -y ansible-core git
 
-# create first user access
-useradd -m -s /bin/bash yaw
-mkdir -p /home/yaw/.ssh
-chmod 700 /home/yaw/.ssh
-echo "${yaw_public_key}" > /home/yaw/.ssh/authorized_keys
-chmod 600 /home/yaw/.ssh/authorized_keys
-chown -R yaw:yaw /home/yaw/.ssh
-echo "yaw ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/yaw
-chmod 440 /etc/sudoers.d/yaw
+# checkout the playbooks
+git clone -b main https://github.com/yawnartey/devopswiki-ansible.git /tmp/devopswiki-ansible
 
-# install docker
-yum install -y docker
-systemctl enable docker
-systemctl start docker
-usermod -aG docker yaw
+# install base components
+ansible-galaxy collection install -r /tmp/devopswiki-ansible/base-components/requirements.yml
 
-# install certbot 
-yum install -y certbot
+# run the playbook
+ansible-playbook /tmp/devopswiki-ansible/base-components/main.yml
+ansible-playbook /tmp/devopswiki-ansible/frontend/main.yml
 
-# try copy certbot from bucket first 
-aws s3 cp s3://devops-wiki-letsencrypt-c9123c3a736c3547/prod/letsencrypt /etc/letsencrypt --recursive 2>/dev/null
+# create first user access (now this is being handled by ansible)
+# useradd -m -s /bin/bash yaw
+# mkdir -p /home/yaw/.ssh
+# chmod 700 /home/yaw/.ssh
+# echo "${yaw_public_key}" > /home/yaw/.ssh/authorized_keys
+# chmod 600 /home/yaw/.ssh/authorized_keys
+# chown -R yaw:yaw /home/yaw/.ssh
+# echo "yaw ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/yaw
+# chmod 440 /etc/sudoers.d/yaw
 
-#run certbot if the file does not exist
-if [ ! -f /etc/letsencrypt/live/devopswiki.info/fullchain.pem ]; then
-  certbot certonly --standalone -d devopswiki.info -d www.devopswiki.info \
-    --non-interactive --agree-tos --email yawenochnartey@gmail.com
-  aws s3 cp /etc/letsencrypt s3://devops-wiki-letsencrypt-c9123c3a736c3547/prod/letsencrypt --recursive
-fi
+# install docker (now this is being handled by ansible)
+# yum install -y docker
+# systemctl enable docker
+# systemctl start docker
+# usermod -aG docker yaw
 
-# write env file
-mkdir -p /opt/app
-chown -R yaw:yaw /opt/app
-cat > /opt/app/.env <<ENVFILE
-BE_PRIVATE_IP=${be_private_ip}
-SERVER_NAME=devopswiki.info www.devopswiki.info
-CERT_DOMAIN=devopswiki.info
-ENVFILE
+# install certbot (this is being handled by ansible)
+# yum install -y certbot
 
-# install docker compose
-curl -SL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
-chmod +x /usr/local/bin/docker-compose
+# try copy certbot from bucket first  (this is being handled by ansible)
+# aws s3 cp s3://devops-wiki-letsencrypt-c9123c3a736c3547/prod/letsencrypt /etc/letsencrypt --recursive 2>/dev/null
+
+#run certbot if the file does not exist (this is being handled by ansible)
+# if [ ! -f /etc/letsencrypt/live/devopswiki.info/fullchain.pem ]; then
+#   certbot certonly --standalone -d devopswiki.info -d www.devopswiki.info \
+#     --non-interactive --agree-tos --email yawenochnartey@gmail.com
+#   aws s3 cp /etc/letsencrypt s3://devops-wiki-letsencrypt-c9123c3a736c3547/prod/letsencrypt --recursive
+# fi
+
+# write env file (this is being handled by ansible)
+# mkdir -p /opt/app
+# chown -R yaw:yaw /opt/app
+# cat > /opt/app/.env <<ENVFILE
+# BE_PRIVATE_IP=${be_private_ip}
+# SERVER_NAME=devopswiki.info www.devopswiki.info
+# CERT_DOMAIN=devopswiki.info
+# ENVFILE
+
+# install docker compose (being handled by ansible)
+# curl -SL https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
+# chmod +x /usr/local/bin/docker-compose
 
 
-# set up certbot auto-renewal
-yum install -y cronie
-systemctl enable --now crond
-echo "0 3 * * * certbot renew --quiet && /usr/local/bin/docker-compose -f /opt/app/docker-compose.yml restart frontend" | crontab -
+# set up certbot auto-renewal (being handled by ansible)
+# yum install -y cronie
+# systemctl enable --now crond
+# echo "0 3 * * * certbot renew --quiet && /usr/local/bin/docker-compose -f /opt/app/docker-compose.yml restart frontend" | crontab -
