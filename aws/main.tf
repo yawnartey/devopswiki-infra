@@ -48,7 +48,7 @@ module "compute" {
   subnet_ids           = module.networking.subnet_ids
   fe_security_group_id = module.security_group.fe_security_group_id
   be_security_group_id = module.security_group.be_security_group_id
-  fe_instance_profile  = module.iam.fe_instance_profile_name
+  instance_profile     = module.iam.instance_profile_name
   yaw_public_key       = var.yaw_public_key
   postgres_user        = var.postgres_user
   postgres_password    = var.postgres_password

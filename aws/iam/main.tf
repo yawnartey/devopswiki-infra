@@ -1,6 +1,6 @@
 # iam role for frontend ec2
-resource "aws_iam_role" "fe_instance_role" {
-  name = "devopswiki-fe-instance-role"
+resource "aws_iam_role" "instance_role" {
+  name = "devopswiki-instance-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -13,9 +13,9 @@ resource "aws_iam_role" "fe_instance_role" {
 }
 
 # allow s3 access to the letsencrypt bucket only
-resource "aws_iam_role_policy" "fe_s3_policy" {
-  name = "devopswiki-fe-s3-policy"
-  role = aws_iam_role.fe_instance_role.id
+resource "aws_iam_role_policy" "s3_policy" {
+  name = "devopswiki-s3-policy"
+  role = aws_iam_role.instance_role.id
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -30,8 +30,24 @@ resource "aws_iam_role_policy" "fe_s3_policy" {
   })
 }
 
+# ssm policy to allow uploading of files to aws ssm parameter store
+resource "aws_iam_role_policy" "ssm_policy" {
+  name = "devopswiki-ssm-policy"
+  role = aws_iam_role.instance_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect   = "Allow"
+      Action   = ["ssm:GetParameter", "ssm:GetParameters"]
+      Resource = "arn:aws:ssm:eu-central-1:*:parameter/devopswiki/*"
+    }]
+  })
+}
+
+
 # instance profile to attach the role to the ec2
-resource "aws_iam_instance_profile" "fe_instance_profile" {
-  name = "devopswiki-fe-instance-profile"
-  role = aws_iam_role.fe_instance_role.name
+resource "aws_iam_instance_profile" "instance_profile" {
+  name = "devopswiki-instance-profile"
+  role = aws_iam_role.instance_role.name
 }
