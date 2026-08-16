@@ -1,3 +1,6 @@
+# get the region
+data "aws_region" "current" {}
+
 # frontend ec2 instance
 resource "aws_instance" "devopswiki-fe" {
   ami                    = "ami-023adbbb2c440f837"
@@ -6,6 +9,9 @@ resource "aws_instance" "devopswiki-fe" {
   vpc_security_group_ids = [var.fe_security_group_id]
   iam_instance_profile   = var.instance_profile
   user_data = templatefile("${path.module}/scripts/bootstrap-fe.sh", {
+    aws_region        = data.aws_region.current.id
+    env               = var.env
+    domain            = var.domain
     be_private_ip     = aws_instance.devopswiki-be.private_ip
     yaw_public_key    = var.yaw_public_key
     postgres_user     = var.postgres_user
@@ -24,6 +30,9 @@ resource "aws_instance" "devopswiki-be" {
   vpc_security_group_ids = [var.be_security_group_id]
   iam_instance_profile   = var.instance_profile
   user_data = templatefile("${path.module}/scripts/bootstrap-be.sh", {
+    aws_region        = data.aws_region.current.id
+    env               = var.env
+    domain            = var.domain
     yaw_public_key    = var.yaw_public_key
     postgres_user     = var.postgres_user
     postgres_password = var.postgres_password
@@ -41,27 +50,30 @@ resource "aws_instance" "devopswiki-be" {
 #   tags     = { Name = "DevOps WiKi FE EIP" }
 # }
 
+# write public key to ssm
 resource "aws_ssm_parameter" "yaw_public_key" {
-  name  = "/devopswiki/infra-prod/yaw_public_key"
+  name  = "devopswiki-infra-${var.env}-yaw_public_key"
   type  = "SecureString"
   value = var.yaw_public_key
 }
 
+# store backend private ip in ssm
 resource "aws_ssm_parameter" "be_private_ip" {
-  name  = "/devopswiki/infra-prod/be_private_ip"
+  name  = "devopswiki-infra-${var.env}-be_private_ip"
   type  = "String"
   value = aws_instance.devopswiki-be.private_ip
 }
 
+# store postgress user to ssm 
 resource "aws_ssm_parameter" "postgres_user" {
-  name  = "/devopswiki/infra-prod/postgres_user"
+  name  = "devopswiki-infra-${var.env}-postgres_user"
   type  = "SecureString"
   value = var.postgres_user
 }
 
 # store postgress password to ssm
 resource "aws_ssm_parameter" "postgres_password" {
-  name  = "/devopswiki/infra-prod/postgres_password"
+  name  = "devopswiki-infra-${var.env}-postgres_password"
   type  = "SecureString"
   value = var.postgres_password
 }

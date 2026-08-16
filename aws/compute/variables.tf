@@ -19,3 +19,9 @@ variable "postgres_password" {
 variable "instance_profile" {
   type = string
 }
+variable "env" {
+  type = string
+}
+variable "domain" {
+  type = string
+}
